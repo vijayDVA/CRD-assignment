@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class TaskMain
     {
         HashMap<String,JSONObject> map = new HashMap<String,JSONObject>();
         Scanner sc = new Scanner(System.in);
-        
+      
         System.out.println("Operations:");
         System.out.println("-----------");
         System.out.println("1.Create/Add");
@@ -29,13 +30,15 @@ public class TaskMain
         System.out.println("3.Write");
         char ch;
         try{
+
         do {
+            
             System.out.println("Enter Option :");
             int op =sc.nextInt();
             String key;
             String json_key,json_value;
             JSONObject obj = new JSONObject();
-            String filepath="D:\\freshworks\\store.txt";
+            String filepath="D:\\freshworks\\dataStore.txt";
             int op1,tiktok;
             System.out.println("Location");
             System.out.println("---------");
@@ -65,12 +68,12 @@ public class TaskMain
                         break;
                       }
                     }
+                    final String name = filepath;
                     File file=new File(filepath);
                     if(file.exists())
                     {
                         double bytes=file.length();
                         double kilobytes=bytes/1024;
-                        System.out.println("File memory exceeds.."+kilobytes);
                         if(kilobytes>=1000000)
                         {
                             System.out.println("File memory exceeds.."+kilobytes);
@@ -78,7 +81,7 @@ public class TaskMain
                             break;
                         }
                     }
-                    method2(map, filepath);
+                    toread(map, filepath);
                     if(key.length()>32)
                     {
                         System.out.println("Key size exceeds maximum size..");
@@ -89,6 +92,7 @@ public class TaskMain
                         System.out.println("KEY already exists. Duplicate keys not allowed..");
                         break;
                     }            
+                    sc.nextLine();
                     System.out.println("Enter the JSON key:");
                     json_key=sc.nextLine().toUpperCase();
                     System.out.println("Enter the JSON Value:");
@@ -104,6 +108,7 @@ public class TaskMain
                             public void run()
                             {
                                 doaction(map,key);
+                                towrite(map,name);
                             }
                         }, timeout);
                     }
@@ -120,7 +125,7 @@ public class TaskMain
                         break;
                     }
                     map.put(key,obj);
-                    method3(map,filepath);
+                    towrite(map,filepath);
                     break;
 
                 case 2:
@@ -141,7 +146,7 @@ public class TaskMain
                         break;
                     }
                     }
-                    method2(map,filepath);
+                    toread(map,filepath);
                     if(map.containsKey(key))
                     {
                         System.out.println("");
@@ -171,7 +176,7 @@ public class TaskMain
                         break;
                     }
                     }
-                    method2(map, filepath);
+                    toread(map, filepath);
                     if(map.containsKey(key))
                     {
                         map.remove(key);
@@ -183,7 +188,7 @@ public class TaskMain
                         System.out.println("");
                         System.out.println("Key not found!");
                     }
-                    method3(map,filepath);
+                    towrite(map,filepath);
                     
                     break;
 
@@ -196,10 +201,12 @@ public class TaskMain
             System.out.println("To Continue:Press-y/n:");
             ch = sc.next().charAt(0);
         } while ((ch == 'y') ? true : false);
+        System.exit(0);
     }
     catch(Exception e)
     {
-        System.out.println("Mismatch Found..Run again!");
+        System.out.println("Mismatch Found. Run again!");
+        System.exit(0);
     }
     }
 
@@ -208,9 +215,11 @@ public class TaskMain
 
     protected static void doaction(HashMap<String, JSONObject> map,String key) {
         map.remove(key);
+        
+        
     }
 
-    private static void method3(HashMap<String, JSONObject> map, String filepath) {
+    private static void towrite(HashMap<String, JSONObject> map, String filepath) {
         try {
             File fileTwo=new File(filepath);
             FileOutputStream fos=new FileOutputStream(fileTwo);
@@ -226,7 +235,7 @@ public class TaskMain
 
     }
 
-    public static void method2(HashMap<String, JSONObject> map, String filepath) 
+    public static void toread(HashMap<String, JSONObject> map, String filepath) 
     {
         File toRead=new File(filepath);
         if(toRead.length()!=0)
