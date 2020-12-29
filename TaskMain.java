@@ -16,9 +16,9 @@ import java.util.TimerTask;
 import org.json.simple.JSONObject;
 
 
-public class TaskMain 
+public  class TaskMain 
 {
-    public static void main(String[] args) throws IOException,InputMismatchException
+    public synchronized static void main(String[] args) throws IOException,InputMismatchException
     {
         HashMap<String,JSONObject> map = new HashMap<String,JSONObject>();
         Scanner sc = new Scanner(System.in);
@@ -228,11 +228,11 @@ public class TaskMain
             }
     }
 
-    protected static void doaction(HashMap<String, JSONObject> map,String key) {
+    public synchronized static void doaction(HashMap<String, JSONObject> map,String key) {
         map.remove(key);
     }
 
-    private static void towrite(HashMap<String, JSONObject> map, String filepath) {
+    public synchronized static void towrite(HashMap<String, JSONObject> map, String filepath) {
         try {
             File fileTwo=new File(filepath);
             FileOutputStream fos=new FileOutputStream(fileTwo);
@@ -248,7 +248,7 @@ public class TaskMain
 
     }
 
-    public static void toread(HashMap<String, JSONObject> map, String filepath) 
+    public synchronized static void toread(HashMap<String, JSONObject> map, String filepath) 
     {
         File toRead=new File(filepath);
         if(toRead.length()!=0)
