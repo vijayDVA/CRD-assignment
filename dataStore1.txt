@@ -1,2 +1,1 @@
-RR:{"RRR":RRR}
-KEY:{"":"EE"}
+VIJAY:{"CSE":"MALE"}
