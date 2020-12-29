@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.json.simple.JSONObject;
 
 
@@ -33,7 +36,7 @@ public class TaskMain
             String json_key,json_value;
             JSONObject obj = new JSONObject();
             String filepath="D:\\freshworks\\store.txt";
-            int op1;
+            int op1,tiktok;
             System.out.println("Location");
             System.out.println("---------");
             System.out.println("1.New  2.default");
@@ -90,6 +93,20 @@ public class TaskMain
                     json_key=sc.nextLine().toUpperCase();
                     System.out.println("Enter the JSON Value:");
                     json_value=sc.nextLine().toUpperCase();
+                    System.out.println("Enter TimeToLive:");
+                    tiktok = sc.nextInt();
+                    sc.nextLine();
+                    if(tiktok!=0)
+                    {
+                        Timer timer = new Timer();
+                        long timeout = 1000*tiktok;
+                        timer.schedule(new TimerTask(){
+                            public void run()
+                            {
+                                doaction(map,key);
+                            }
+                        }, timeout);
+                    }
                     obj.put(json_key,json_value);
                     ByteArrayOutputStream ostream = new ByteArrayOutputStream ();
                     ObjectOutputStream obStream = new ObjectOutputStream(ostream);
@@ -107,6 +124,23 @@ public class TaskMain
                     break;
 
                 case 2:
+                    if(op1==1){
+                        System.out.println("Enter filepath with filename(.txt):");
+                        filepath=sc.next();
+                    try {
+                        File myObj = new File(filepath);
+                        if (myObj.createNewFile()) {
+                            System.out.println("");
+                        System.out.println("File created: " + myObj.getName());
+                        } else {
+                            System.out.println("");
+                        System.out.println("File is existing..");
+                        }
+                    } catch (IOException e) {
+                        System.out.println("An error occurred-Please give correct location");
+                        break;
+                    }
+                    }
                     method2(map,filepath);
                     if(map.containsKey(key))
                     {
@@ -120,6 +154,23 @@ public class TaskMain
                     break;
                  
                 case 3:
+                    if(op1==1){
+                        System.out.println("Enter filepath with filename(.txt):");
+                        filepath=sc.next();
+                    try {
+                        File myObj = new File(filepath);
+                        if (myObj.createNewFile()) {
+                            System.out.println("");
+                        System.out.println("File created: " + myObj.getName());
+                        } else {
+                            System.out.println("");
+                        System.out.println("File is existing..");
+                        }
+                    } catch (IOException e) {
+                        System.out.println("An error occurred-Please give correct location");
+                        break;
+                    }
+                    }
                     method2(map, filepath);
                     if(map.containsKey(key))
                     {
@@ -154,6 +205,10 @@ public class TaskMain
 
 
 
+
+    protected static void doaction(HashMap<String, JSONObject> map,String key) {
+        map.remove(key);
+    }
 
     private static void method3(HashMap<String, JSONObject> map, String filepath) {
         try {
