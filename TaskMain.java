@@ -11,14 +11,19 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import org.json.simple.JSONObject;
 
+/*
+ * Used hash Map to get Fast Speed
+ * Create a freshworks folder at local Disk-D for default location
+ * D:\freshworks\dataStore.txt
+ */
 
 public  class TaskMain 
 {
     public static void main(String[] args) throws IOException,InputMismatchException
     {
+        //initialized new hashMap;
         HashMap<String,JSONObject> map = new HashMap<String,JSONObject>();
         Scanner sc = new Scanner(System.in);
       
@@ -27,6 +32,7 @@ public  class TaskMain
         try
         {
             do {
+                //clearing the terminal every time of new operation begins
                 cls();
                 System.out.println("Operations:");
                 System.out.println("-----------");
@@ -35,29 +41,42 @@ public  class TaskMain
                 System.out.println("3.Delete");
                 System.out.println("4.Exit");
                 System.out.println("Enter Option :");
+
                 int op =sc.nextInt();
                 String key="";
                 String json_key="",json_value="";
                 JSONObject obj = new JSONObject();
                 int op1=4,tiktok;
                 String filepath="D:\\freshworks\\dataStore.txt";
-                if(op!=4){
+                //default filepath-D:\\freshworks\\dataStore.txt
+
+                if(op!=4)
+                {
+                //getting location/filepath
                 System.out.println("Location");
                 System.out.println("---------");
                 System.out.println("1.New  2.default");
                 op1=sc.nextInt();
+
+                //clear map for every new operation
                 map.clear();
                 System.out.println("Enter key:");
-                key=sc.next().toUpperCase();}
+                key=sc.next().toUpperCase();
+                }
+
                 switch(op)
                 {
                     case 1:
                         if(op1==1){
+                            //optional file path
                             System.out.println("Enter filepath with filename(.txt):");
                             filepath=sc.next();
+                            
                             try
                             {
                                 File myObj = new File(filepath);
+
+                                //Used to check if file already exists or not
                                 if (myObj.createNewFile()){
                                     System.out.println("");
                                 System.out.println("File created: " + myObj.getName());
@@ -70,13 +89,18 @@ public  class TaskMain
                                 break;
                             }
                         }
+
                         final String fname = filepath;
                         final String keyy=key;
                         File file=new File(filepath);
+
+                        //checking the file size (<1GB?)
                         if(file.exists())
                         {
                             double bytes=file.length();
+                            //Converting bytes into KiloBytes
                             double kilobytes=bytes/1024;
+                            //1GB = 1048576KB
                             if(kilobytes>=1048576)
                             {
                                 System.out.println("File memory exceeds.."+kilobytes);
@@ -84,13 +108,17 @@ public  class TaskMain
                                 break;
                             }
                         }
+
+                        //calling toread function to store all keys in HashMap
                         toread(map, filepath);
-                        if(key.length()>32)
+
+                        //Checking whether the key is less than 32 chars or not
+                        if(key.length()>=32)
                         {
                             System.out.println("Key size exceeds maximum size..");
                             break;
                         }
-
+                        //To check if the key already exists or not
                         if(map.containsKey(key)){
                             System.out.println("KEY already exists. Duplicate keys not allowed..");
                             break;
@@ -98,11 +126,15 @@ public  class TaskMain
                         sc.nextLine();
                         System.out.println("Enter the JSON key:");
                         json_key=sc.nextLine().toUpperCase();
+
                         System.out.println("Enter the JSON Value:");
                         json_value=sc.nextLine().toUpperCase();
+
                         System.out.println("Enter TimeToLive:");
                         tiktok = sc.nextInt();
                         sc.nextLine();
+
+                        //setting the timer(TTL) for each key
                         if(tiktok!=0)
                         {
                             Timer timer = new Timer();
@@ -116,18 +148,23 @@ public  class TaskMain
                             }, timeout);
                         }
                         obj.put(json_key,json_value);
+
                         ByteArrayOutputStream ostream = new ByteArrayOutputStream ();
                         ObjectOutputStream obStream = new ObjectOutputStream(ostream);
                         obStream.writeObject(obj.toString());
                         byte[] rawObject = ostream.toByteArray();
                         ostream.close();
                         int size = rawObject.length;
+                        
+                        //Checking the size of object(<=16kb?)
                         if(size>16*1024)
                         {
                             System.out.println("Object Limit Exceeded.! Try again");
                             break;
                         }
                         map.put(key,obj);
+
+                        //if all conditions are true then write all key & values to the dataStore
                         towrite(map,filepath);
                         break;
 
@@ -150,6 +187,8 @@ public  class TaskMain
                             }
                         }
                         toread(map,filepath);
+
+                        //Displaying the value from HaspMap to the given key by user 
                         if(map.containsKey(key))
                         {
                             System.out.println("");
@@ -215,8 +254,9 @@ public  class TaskMain
         }
     }
 
-
-    public static void cls()
+    //Used Synchronized for every Method Such that multiple threads
+    //cls()-function is used to clear the terminal
+    public synchronized static void cls()
     {
         try
         {	
@@ -227,11 +267,12 @@ public  class TaskMain
             }
     }
 
-    public static void doaction(HashMap<String, JSONObject> map,String key) {
+    public synchronized static void doaction(HashMap<String, JSONObject> map,String key) {
         map.remove(key);
     }
 
-    public static void towrite(HashMap<String, JSONObject> map, String filepath) {
+    //toread-function is used to write all keys and values from HaspMap to dataStore
+    public synchronized static void towrite(HashMap<String, JSONObject> map, String filepath) {
         try {
             File fileTwo=new File(filepath);
             FileOutputStream fos=new FileOutputStream(fileTwo);
@@ -247,7 +288,8 @@ public  class TaskMain
 
     }
 
-    public static void toread(HashMap<String, JSONObject> map, String filepath) 
+    //toread-function is used to read all keys and values from dataStore and storing in map
+    public synchronized static void toread(HashMap<String, JSONObject> map, String filepath) 
     {
         File toRead=new File(filepath);
         if(toRead.length()!=0)
