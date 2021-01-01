@@ -134,6 +134,7 @@ public  class TaskMain
                         tiktok = sc.nextInt();
                         sc.nextLine();
 
+
                         //setting the timer(TTL) for each key
                         if(tiktok!=0)
                         {
@@ -165,6 +166,8 @@ public  class TaskMain
                         map.put(key,obj);
 
                         //if all conditions are true then write all key & values to the dataStore
+                        towrite(map,filepath);
+                        toread(map, filepath);
                         towrite(map,filepath);
                         break;
 
@@ -231,6 +234,7 @@ public  class TaskMain
                             System.out.println("Key not found!");
                         }
                         towrite(map,filepath);
+                        
                         break;
 
                     case 4:
@@ -302,7 +306,7 @@ public  class TaskMain
                 while(sc.hasNextLine()) {
                     currentLine=sc.nextLine();    
                     String[] arr = currentLine.split(":", 2); 
-                    StringBuilder key = new StringBuilder("");      
+                    StringBuilder key = new StringBuilder();      
                     JSONObject obj = new JSONObject();
                     String nkey=arr[0];
                     int i;
@@ -311,8 +315,10 @@ public  class TaskMain
                             key.append(arr[1].charAt(i)); 
                         }
                     }
+
                     int j;
-                    StringBuilder value = new StringBuilder(""); 
+                    StringBuilder value = new StringBuilder(); 
+
                     for (j=i; j < arr[1].length(); j++) {
             
                         if(Character.isUpperCase(arr[1].charAt(j))||arr[1].charAt(i)==' '){    
