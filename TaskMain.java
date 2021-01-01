@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Map;
@@ -18,7 +17,7 @@ import org.json.simple.JSONObject;
 
 public  class TaskMain 
 {
-    public synchronized static void main(String[] args) throws IOException,InputMismatchException
+    public static void main(String[] args) throws IOException,InputMismatchException
     {
         HashMap<String,JSONObject> map = new HashMap<String,JSONObject>();
         Scanner sc = new Scanner(System.in);
@@ -33,7 +32,7 @@ public  class TaskMain
                 System.out.println("-----------");
                 System.out.println("1.Create/Add");
                 System.out.println("2.Read");
-                System.out.println("3.Write");
+                System.out.println("3.Delete");
                 System.out.println("4.Exit");
                 System.out.println("Enter Option :");
                 int op =sc.nextInt();
@@ -217,7 +216,7 @@ public  class TaskMain
     }
 
 
-    public synchronized static void cls()
+    public static void cls()
     {
         try
         {	
@@ -228,11 +227,11 @@ public  class TaskMain
             }
     }
 
-    public synchronized static void doaction(HashMap<String, JSONObject> map,String key) {
+    public static void doaction(HashMap<String, JSONObject> map,String key) {
         map.remove(key);
     }
 
-    public synchronized static void towrite(HashMap<String, JSONObject> map, String filepath) {
+    public static void towrite(HashMap<String, JSONObject> map, String filepath) {
         try {
             File fileTwo=new File(filepath);
             FileOutputStream fos=new FileOutputStream(fileTwo);
@@ -248,7 +247,7 @@ public  class TaskMain
 
     }
 
-    public synchronized static void toread(HashMap<String, JSONObject> map, String filepath) 
+    public static void toread(HashMap<String, JSONObject> map, String filepath) 
     {
         File toRead=new File(filepath);
         if(toRead.length()!=0)
